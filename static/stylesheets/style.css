@@ -1,0 +1,93 @@
+:root {
+	--bg: #f8f9fa;
+	--fg: #000;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bg: #242936;
+		--fg: #CCCAC2;
+	}
+}
+
+html * {
+	font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'DejaVu Sans Mono', Menlo, 'Cascadia Code', Consolas, monospace;
+	background-color: var(--bg);
+	color: var(--fg);
+}
+
+.titleStyle {
+	font-family: 'SF Mono', SFMono-Regular, ui-monospace, 'DejaVu Sans Mono', Menlo, 'Cascadia Code', Consolas, monospace;
+	font-size: 5.0em;
+	z-index : 1;
+}
+
+.container {
+	position: relative;
+	width: auto;
+	height: auto;
+	background: transparent!important;
+}
+
+.spacer{
+	font-size: 0; 
+	height: 10vw;
+	line-height: 0;
+	background: transparent!important;
+}
+
+#filldiv {
+	align-content: center;
+	height: 100vh;
+	width:100vw;
+	background: transparent!important ;
+}
+
+.title-container { 
+	display: inline-block;
+	align-content: center;
+	text-align: center;
+  position: relative;
+	margin-left: 50%;
+	transform: translateX(-50%);
+	background: transparent!important;
+  /* top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); */
+}
+.nav-link {
+	color: var(--fg);.slider.round:before {
+		border-radius: 50%;
+	}
+}
+.header {
+	padding-top: 100px;
+	text-align: center;
+	background: transparent!important;
+}
+.command {
+	text-align: left;
+	background: transparent!important;
+}
+
+.bodyitem{
+	position: relative;
+	margin-left: 50%;
+	transform: translateX(-50%);
+	padding: 30px;
+	background: transparent!important;
+}
+
+p1 {
+	padding-top: 10%;
+	background: transparent!important;
+}
+h2 {
+	display: inline-block;
+	background: transparent!important;
+}
+
+.navbar-brand {
+	margin-left: 1rem;
+	background: transparent!important;
+}

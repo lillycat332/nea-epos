@@ -5,33 +5,30 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"database/sql"
+	_ "modernc.org/sqlite"
 )
 
+type StatusRespWr struct {
+	http.ResponseWriter
+	status int
+}
+
+func (w *StatusRespWr) WriteHeader(status int) {
+	w.status = status
+	w.ResponseWriter.WriteHeader(status)
+}
+
 func main() {
-	port := flag.String("port", ":8080", "Enter port number")
+	port := flag.String("port", ":8080", "HTTP Port Number")
 	flag.Parse()
 	fileServer := http.FileServer(http.Dir("./static"))
-	http.Handle("/", fileServer)
-	http.HandleFunc("/hello", testHandler)
+	http.Handle("/", wrapHandler(fileServer))
 	http.HandleFunc("/form", formHandler)
-	fmt.Printf("Starting server at port %s\n", *port)
+	log.Printf("Starting server on port %s\n", *port)
 	if err := http.ListenAndServe(*port, nil); err != nil {
 		log.Fatal(err)
 	}
-}
-
-func testHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/test" {
-		http.Error(w, "404 not found.", http.StatusNotFound)
-		return
-	}
-
-	if r.Method != "GET" {
-		http.Error(w, "Method is not supported.", http.StatusNotFound)
-		return
-	}
-
-	fmt.Fprintf(w, "Server is up!")
 }
 
 func formHandler(w http.ResponseWriter, r *http.Request) {
@@ -40,9 +37,22 @@ func formHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprintf(w, "POST request successful\n")
-	name := r.FormValue("name")
-	address := r.FormValue("address")
+	log.Printf("POST request %s, %s recieved \n", r.RemoteAddr, r.Form)
+	username := r.FormValue("username")
+	password := r.FormValue("password")
 
-	fmt.Fprintf(w, "Name = %s\n", name)
-	fmt.Fprintf(w, "Address = %s\n", address)
+	fmt.Fprintf(w, "username = %s\n", username)
+	fmt.Fprintf(w, "password = %s\n", password)
+}
+
+func wrapHandler(h http.Handler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		srw := &StatusRespWr{ResponseWriter: w}
+		log.Printf("Serving %s", r.RequestURI)
+		h.ServeHTTP(srw, r)
+		if srw.status >= 400 { // 400+ codes are the error codes
+			log.Printf("Error status code: %d when serving path: %s",
+				srw.status, r.RequestURI)
+		}
+	}
 }
