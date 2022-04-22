@@ -1,3 +1,8 @@
+9fans.net/go v0.0.2/go.mod h1:lfPdxjq9v8pVQXUMBCx5EO5oLXWQFlKRQgs1kEkjoIM=
+9fans.net/go v0.0.4 h1:g7K+b5I1PlSBFLnjuco3LAx5boK39UUl0Gsrmw6Gl2U=
+9fans.net/go v0.0.4/go.mod h1:lfPdxjq9v8pVQXUMBCx5EO5oLXWQFlKRQgs1kEkjoIM=
+git.sr.ht/~mkhl/xplor v0.0.0-20191220205111-248e92cb7559 h1:DlOiwxltoQoumekmT1in22z0VIWNb1NN+3cDqklWf3w=
+git.sr.ht/~mkhl/xplor v0.0.0-20191220205111-248e92cb7559/go.mod h1:P8VwjSEUKaMTUDdwLPVFMyZB3LQyvOE7EnWgp2V4wV0=
 github.com/dustin/go-humanize v1.0.0/go.mod h1:HtrtbFcZ19U5GC7JDqmcUSB87Iq5E25KnS6fMYU6eOk=
 github.com/google/go-cmp v0.5.3/go.mod h1:v8dTdLbMG2kIc/vJvl+f65V22dbkXbowE6jgT/gNBxE=
 github.com/google/uuid v1.3.0 h1:t6JiXgmwXMjEs8VusXIJk2BXHsn+wx8BZdTaoZ5fu7I=

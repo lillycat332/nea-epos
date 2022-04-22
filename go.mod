@@ -3,6 +3,8 @@ module github.com/lillycat332/nea-epos
 go 1.17
 
 require (
+	9fans.net/go v0.0.4 // indirect
+	git.sr.ht/~mkhl/xplor v0.0.0-20191220205111-248e92cb7559 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/kballard/go-shellquote v0.0.0-20180428030007-95032a82bc51 // indirect
 	github.com/mattn/go-isatty v0.0.12 // indirect
