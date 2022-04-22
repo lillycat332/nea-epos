@@ -1,9 +1,17 @@
 <html>
 	<head>
-		<title>Test</title>
+		<title>Admin panel</title>
 	</head>
 	<body>
-		<h2>gggug</h2>
+		<h2>Top secret admin panel</h2>
 		<a href="login.html">login</a>
+		<div>
+			<h2>Create User</h2>
+			<form method="POST" action="/create">
+				<label>Username</label><input name="username" type="text" value="" />
+				<label>Password</label><input name="password" type="password" value="" />
+				<input type="submit" value="Create" />
+			</form>
+		</div>
 	</body>
 </html>
