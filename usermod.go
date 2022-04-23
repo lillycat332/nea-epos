@@ -19,14 +19,14 @@ type User struct {
 }
 
 func (user *User) validateUser() bool {
-	user.Errors = make(map[string]string)
+	Errors := make(map[string]string)
 	if strings.TrimSpace(user.Username) == "" {
-		user.Errors["username"] = "Please enter a username"
+		Errors["username"] = "Please enter a username"
 	}
 	if strings.TrimSpace(user.Password) == "" {
-		user.Errors["username"] = "Please enter a password"
+		Errors["password"] = "Please enter a password"
 	}
-	return len(user.Errors) == 0
+	return len(Errors) == 0
 }
 
 func userCreateHandler(w http.ResponseWriter, r *http.Request) {
@@ -34,21 +34,34 @@ func userCreateHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "ParseForm() err: %v", err)
 		return
 	}
+
 	priv, err := strconv.Atoi(r.FormValue("privilege"))
-	if err != nil {
-		fmt.Fprintf(w, "Atoi err: %v. Enter a valid integer.", err)
+	if err != nil || priv > 2 || priv < 0 {
+		fmt.Fprintf(w, "Privilege must be a numerical value between 0 and 2. ")
 	}
+
+	pw, err := hashPassword(r.FormValue("password"))
+	if err != nil {
+		log.Printf("Failed to create user - hashing password failed!")
+	}
+
 	u := User{
 		Username:  r.FormValue("username"),
-		Password:  r.FormValue("password"),
+		Password:  pw,
 		Privilege: priv,
 	}
-	u.validateUser()
-	rdb, _ := sql.Open("sqlite3", "./EPOS.db")
-	defer rdb.Close()
-	log.Printf("POST request (Create User) recieved (%s)", r.RemoteAddr)
-	createUser(rdb, u.Username, u.Password, u.Privilege)
-	fmt.Fprintf(w, "success")
+
+	valid := u.validateUser()
+	if valid != true {
+		log.Printf("User validation failed: %s", u.Errors)
+		fmt.Fprintf(w, "Invalid user entry.")
+
+	} else {
+		rdb, _ := sql.Open("sqlite3", "./EPOS.db")
+		defer rdb.Close()
+		log.Printf("POST request (Create User) recieved (%s)", r.RemoteAddr)
+		createUser(rdb, u.Username, u.Password, u.Privilege)
+	}
 }
 
 func createUser(db *sql.DB, username string, password string, privilege int) {
@@ -58,7 +71,7 @@ func createUser(db *sql.DB, username string, password string, privilege int) {
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
-	_, err = statement.Exec(username, password)
+	_, err = statement.Exec(username, password, privilege)
 	if err != nil {
 		log.Fatalln(err.Error())
 	}

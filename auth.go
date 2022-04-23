@@ -12,5 +12,4 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	log.Printf("POST request (Login) recieved", r.RemoteAddr)
-
 }
