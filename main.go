@@ -12,11 +12,11 @@ import (
 
 func init() {
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, `servepls is a simple webserver.
-		Launching this will activate the webserver on port :8080 or a port specified by -port.
-		For more information see the documentation.
-		Usage:
-		`)
+		fmt.Fprintf(os.Stderr, `
+servepls is a simple webserver.
+Launching this will activate the webserver on port :8080 or a port specified by -port.
+For more information see the documentation.
+Usage:\n`)
 		flag.PrintDefaults()
 	}
 }
