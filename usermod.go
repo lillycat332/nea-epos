@@ -40,7 +40,7 @@ func userCreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	u := User{
 		Username:  r.FormValue("username"),
-		Password:  r.FormValue("password"),
+		id:        r.FormValue("id"),
 		Privilege: priv,
 	}
 	u.validateUser()
