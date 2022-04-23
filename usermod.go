@@ -12,21 +12,27 @@ import (
 )
 
 type User struct {
-	Username  string
-	Password  string
-	Privilege int
-	Errors    map[string]string
+	Username       string
+	HashedPassword string
+	Privilege      string
+	Errors         map[string]string
 }
 
 func (user *User) validateUser() bool {
-	Errors := make(map[string]string)
+	user.Errors = make(map[string]string)
 	if strings.TrimSpace(user.Username) == "" {
-		Errors["username"] = "Please enter a username"
+		user.Errors["username"] = "Please enter a username.\n"
 	}
-	if strings.TrimSpace(user.Password) == "" {
-		Errors["password"] = "Please enter a password"
+
+	if strings.TrimSpace(user.HashedPassword) == "" {
+		user.Errors["password"] = "No Password\n"
 	}
-	return len(Errors) == 0
+
+	priv, err := strconv.Atoi(user.Privilege)
+	if err != nil || priv > 2 || priv < 0 {
+		user.Errors["privilege"] = "Privilege must be a numerical value between 0 and 2.\n"
+	}
+	return len(user.Errors) == 0
 }
 
 func userCreateHandler(w http.ResponseWriter, r *http.Request) {
@@ -35,36 +41,35 @@ func userCreateHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	priv, err := strconv.Atoi(r.FormValue("privilege"))
-	if err != nil || priv > 2 || priv < 0 {
-		fmt.Fprintf(w, "Privilege must be a numerical value between 0 and 2. ")
-	}
-
-	pw, err := hashPassword(r.FormValue("password"))
-	if err != nil {
-		log.Printf("Failed to create user - hashing password failed!")
-	}
-
-	u := User{
-		Username:  r.FormValue("username"),
-		Password:  pw,
-		Privilege: priv,
-	}
-
-	valid := u.validateUser()
-	if valid != true {
-		log.Printf("User validation failed: %s", u.Errors)
-		fmt.Fprintf(w, "Invalid user entry.")
-
+	if len(r.FormValue("password")) <= 0 {
+		fmt.Fprintf(w, "Failed to create user - a password is required!")
 	} else {
-		rdb, _ := sql.Open("sqlite3", "./EPOS.db")
-		defer rdb.Close()
-		log.Printf("POST request (Create User) recieved (%s)", r.RemoteAddr)
-		createUser(rdb, u.Username, u.Password, u.Privilege)
+		pw, err := hashPassword(r.FormValue("password"))
+		if err != nil {
+			log.Printf("Failed to create user - hashing password failed!")
+		}
+		u := User{
+			Username:       r.FormValue("username"),
+			HashedPassword: pw,
+			Privilege:      r.FormValue("privilege"),
+		}
+
+		valid := u.validateUser()
+		if valid != true {
+			log.Printf("User validation failed: %s", u.Errors)
+			for key, element := range u.Errors {
+				fmt.Fprintln(w, key, element, "\n")
+			}
+		} else {
+			rdb, _ := sql.Open("sqlite3", db)
+			defer rdb.Close()
+			log.Printf("POST request (Create User) recieved (%s)", r.RemoteAddr)
+			createUser(rdb, u.Username, u.HashedPassword, u.Privilege)
+		}
 	}
 }
 
-func createUser(db *sql.DB, username string, password string, privilege int) {
+func createUser(db *sql.DB, username string, password string, privilege string) {
 	log.Println("Attempting creation of new user record.")
 	insertUserStatement := `INSERT INTO users(username, password, privilege) VALUES (?,?,?)`
 	statement, err := db.Prepare(insertUserStatement)
