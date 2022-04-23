@@ -18,6 +18,7 @@ type User struct {
 	Errors         map[string]string
 }
 
+// Validate form input
 func (user *User) validateUser() bool {
 	user.Errors = make(map[string]string)
 	if strings.TrimSpace(user.Username) == "" {
@@ -35,6 +36,7 @@ func (user *User) validateUser() bool {
 	return len(user.Errors) == 0
 }
 
+// HTTP handler for /create form inputs
 func userCreateHandler(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
 		fmt.Fprintf(w, "ParseForm() err: %v", err)
@@ -58,7 +60,7 @@ func userCreateHandler(w http.ResponseWriter, r *http.Request) {
 		if valid != true {
 			log.Printf("User validation failed: %s", u.Errors)
 			for key, element := range u.Errors {
-				fmt.Fprintln(w, key, element, "\n")
+				fmt.Fprintln(w, key, element)
 			}
 		} else {
 			rdb, _ := sql.Open("sqlite3", db)
@@ -69,6 +71,7 @@ func userCreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Create a user by inserting into the database.
 func createUser(db *sql.DB, username string, password string, privilege string) {
 	log.Println("Attempting creation of new user record.")
 	insertUserStatement := `INSERT INTO users(username, password, privilege) VALUES (?,?,?)`
