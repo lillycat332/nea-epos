@@ -1,0 +1,28 @@
+.roboto {
+	font-family: 'Roboto', sans-serif;
+}
+
+.bottom-right {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	margin-bottom: 2%;
+	margin-right: 2%;
+}
+
+.bottom-left {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	margin-bottom: 2%;
+	margin-left: 2%;
+}
+
+.padding-right {
+	margin-right: 10%;
+}
+
+.fill {
+	display: flex;
+	align-items: stretch;
+}
