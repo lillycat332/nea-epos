@@ -21,7 +21,7 @@ func init() {
 		fmt.Fprintf(os.Stderr, `Usage:`)
 		flag.PrintDefaults()
 	}
-	port = *flag.String("port", ":8080", "a port number prefixed by :, that tells the program where it should host the server..")
+	port = *flag.String("port", ":8080", "a port number prefixed by :, that tells the program where it should host the server.")
 	db = *flag.String("db", "./EPOS.db", "path to an sqlite3 database file, that tells the program where to store and load it's data from.")
 	fs = *flag.String("fs", "./static", "path to your html files.")
 	flag.Parse()
