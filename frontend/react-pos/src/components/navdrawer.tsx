@@ -23,6 +23,7 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
 import AddToCartFAB from './FAB.tsx';
 import { Shop } from '@mui/icons-material';
+import ProductCard from './ProductItem.tsx';
 
 const drawerWidth = 240;
 
@@ -131,6 +132,9 @@ export default function ResponsiveDrawer(props: { window: any; }) {
         <div className="bottom-right">
           <AddToCartFAB />
         </div>
+        <Typography>
+          <ProductCard name="Banana"/>
+        </Typography>
       </Box>
     </Box>
   );
