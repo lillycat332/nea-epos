@@ -11,6 +11,19 @@ interface ProductProps {
   imagePath: string;
   price: number;
 }
+
+const currencyType = "GBP";
+
+function currencyTypeCheck() {
+  if (currencyType === 'USD') {
+    return '$';
+  } else if (currencyType === 'EUR') {
+    return '€';
+  } else if (currencyType === 'GBP') {
+    return '£';
+  }
+}
+
 export default function ProductCard(props: ProductProps) {
   return (
     <Card sx={{ minWidth: 275 }}>
@@ -24,7 +37,7 @@ export default function ProductCard(props: ProductProps) {
           {props.name}
         </Typography>
         <Typography variant="body2" color="textSecondary" component="p">
-          ${props.price}
+          {currencyTypeCheck()}{props.price}
         </Typography>
       </CardContent>
       <CardActions>

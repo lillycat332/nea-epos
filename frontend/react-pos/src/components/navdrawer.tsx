@@ -30,13 +30,25 @@ const listItems = products.map((product) =>
   <ProductCard name={product[0]} price={product[1]} imagePath="logo512.png" />
 );
 
+
 export default function ResponsiveDrawer(props: { window: any; }) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
-
+  const [page, setPage] = React.useState("Home");
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+
+  function HandlePages() {
+    if (page === "Home") {
+      console.log("Home");
+      return <HomePage />;
+    } else if (page === "Users") {
+      console.log("Users");
+      return <UsersPage />;
+    }
+    console.log(page);
+  }
 
   const drawer = (
     <div>
@@ -44,7 +56,7 @@ export default function ResponsiveDrawer(props: { window: any; }) {
       <Divider />
       <List>
         {['Home', 'Cart', 'Sales'].map((text, index) => (
-          <ListItem button key={text}>
+          <ListItem button key={text} onClick={() => setPage(text)}>
             <ListItemIcon>
               {index === 0 && <HomeIcon />}
               {index === 1 && <ShoppingCartIcon />}
@@ -56,8 +68,8 @@ export default function ResponsiveDrawer(props: { window: any; }) {
       </List>
       <Divider />
       <List>
-        {['Users', 'Products', 'Manage', 'Login', 'Logout'].map((text, index) => (
-          <ListItem button key={text}>
+        {['Users', 'Products', 'Manage', 'Login', 'Logout'].map((text: string, index) => (
+          <ListItem button key={text} onClick={() => setPage(text)}>
             <ListItemIcon>
               {index === 0 && <PersonIcon />}
               {index === 1 && <Inventory2Icon />}
@@ -131,16 +143,28 @@ export default function ResponsiveDrawer(props: { window: any; }) {
         <div className="bottom-right">
           <AddToCartFAB />
         </div>
-        <Masonry
-          columns={4}
-          spacing={2}
-          defaultHeight={450}
-          defaultColumns={4}
-          defaultSpacing={1}
-        >
-          {listItems}
-        </Masonry>
+        <HandlePages />
       </Box>
     </Box>
   );
+}
+
+function HomePage() {
+  return (
+    <Masonry
+      columns={4}
+      spacing={2}
+      defaultHeight={450}
+      defaultColumns={4}
+      defaultSpacing={1}
+    >
+      {listItems}
+    </Masonry>
+  )
+}
+
+function UsersPage() {
+  return (
+    <PersonIcon />
+  )
 }
