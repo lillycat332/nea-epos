@@ -16,18 +16,15 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import HomeIcon from '@mui/icons-material/Home';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import PersonIcon from '@mui/icons-material/Person';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import SettingsIcon from '@mui/icons-material/Settings';
 import LoginIcon from '@mui/icons-material/Login';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
 import AddToCartFAB from './FAB.tsx';
-import { Shop } from '@mui/icons-material';
 import ProductCard from './ProductItem.tsx';
 import Masonry from '@mui/lab/Masonry';
 
 const drawerWidth = 240;
-
 const products = [['Banana', 1.0], ['Passionfruit', 2.0], ['Dragonfruit', 3.0], ['Strawbebby', 4.0], ['Starfruit', 5.0]];
 const listItems = products.map((product) =>
   <ProductCard name={product[0]} price={product[1]} imagePath="logo512.png"/>
@@ -40,7 +37,7 @@ export default function ResponsiveDrawer(props: { window: any; }) {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-
+  
   const drawer = (
     <div>
       <Toolbar />
