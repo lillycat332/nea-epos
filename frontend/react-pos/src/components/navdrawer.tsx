@@ -24,8 +24,14 @@ import Inventory2Icon from '@mui/icons-material/Inventory2';
 import AddToCartFAB from './FAB.tsx';
 import { Shop } from '@mui/icons-material';
 import ProductCard from './ProductItem.tsx';
+import Masonry from '@mui/lab/Masonry';
 
 const drawerWidth = 240;
+
+const products = [['Banana', 1.0], ['Passionfruit', 2.0], ['Dragonfruit', 3.0], ['Strawbebby', 4.0], ['Starfruit', 5.0]];
+const listItems = products.map((product) =>
+  <ProductCard name={product[0]} price={product[1]} imagePath="logo512.png"/>
+);
 
 export default function ResponsiveDrawer(props: { window: any; }) {
   const { window } = props;
@@ -132,9 +138,15 @@ export default function ResponsiveDrawer(props: { window: any; }) {
         <div className="bottom-right">
           <AddToCartFAB />
         </div>
-        <Typography>
-          <ProductCard name="Banana"/>
-        </Typography>
+        <Masonry
+          columns={4}
+          spacing={2}
+          defaultHeight={450}
+          defaultColumns={4}
+          defaultSpacing={1}
+        >
+          {listItems}
+        </Masonry>
       </Box>
     </Box>
   );
