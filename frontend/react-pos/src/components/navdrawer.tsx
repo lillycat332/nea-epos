@@ -27,7 +27,7 @@ import Masonry from '@mui/lab/Masonry';
 const drawerWidth = 240;
 const products = [['Banana', 1.0], ['Passionfruit', 2.0], ['Dragonfruit', 3.0], ['Strawbebby', 4.0], ['Starfruit', 5.0]];
 const listItems = products.map((product) =>
-  <ProductCard name={product[0]} price={product[1]} imagePath="logo512.png"/>
+  <ProductCard name={product[0]} price={product[1]} imagePath="logo512.png" />
 );
 
 export default function ResponsiveDrawer(props: { window: any; }) {
@@ -37,7 +37,7 @@ export default function ResponsiveDrawer(props: { window: any; }) {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-  
+
   const drawer = (
     <div>
       <Toolbar />
@@ -46,9 +46,9 @@ export default function ResponsiveDrawer(props: { window: any; }) {
         {['Home', 'Cart', 'Sales'].map((text, index) => (
           <ListItem button key={text}>
             <ListItemIcon>
-              {index === 0 && <HomeIcon /> }
-              {index === 1 && <ShoppingCartIcon /> }
-              {index === 2 && <AttachMoneyIcon /> }
+              {index === 0 && <HomeIcon />}
+              {index === 1 && <ShoppingCartIcon />}
+              {index === 2 && <AttachMoneyIcon />}
             </ListItemIcon>
             <ListItemText primary={text} />
           </ListItem>
@@ -95,19 +95,15 @@ export default function ResponsiveDrawer(props: { window: any; }) {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Box
-        component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-        aria-label="mailbox folders"
-      >
-        {}
+      <Box component="nav" sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }} aria-label="mailbox folders">
+        { }
         <Drawer
           container={container}
           variant="permanent"
           open={mobileOpen}
           onClose={handleDrawerToggle}
           ModalProps={{
-            keepMounted: true, 
+            keepMounted: true,
           }}
           sx={{
             display: { xs: 'block', sm: 'none' },

@@ -7,8 +7,8 @@ export default function AddToCartFAB() {
 	return (
 		<Box sx={{ '& > :not(style)': { m: 1 } }}>
 			<Fab color="primary" aria-label="add" className="bottom-left">
-        <AddShoppingCartIcon />
-      </Fab>
+				<AddShoppingCartIcon />
+			</Fab>
 		</Box>
 	)
 }
