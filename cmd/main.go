@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 // This file is just for initializing the program - everything else is in the other files
@@ -32,6 +34,7 @@ func main() {
 	http.Handle("/", wrapHandler(fileServer))
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/create", userCreateHandler)
+	http.HandleFunc("/readUsers", userReader)
 	log.Printf("Starting server on port %s\n", port)
 	if err := http.ListenAndServe(port, nil); err != nil {
 		log.Fatal(err)

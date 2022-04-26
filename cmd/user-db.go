@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -34,6 +35,13 @@ func (user *User) validateUser() bool {
 		user.Errors["privilege"] = "Privilege must be a numerical value between 0 and 2.\n"
 	}
 	return len(user.Errors) == 0
+}
+
+func userReader(w http.ResponseWriter, r *http.Request) {
+
+	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/octet-stream")
+	io.WriteString(w, "Hello World")
 }
 
 // HTTP handler for /create form inputs
@@ -84,4 +92,22 @@ func createUser(db *sql.DB, username string, password string, privilege string) 
 		log.Fatalln(err.Error())
 	}
 	log.Printf("User %s created successfully", username)
+	queryUsers(db)
+}
+
+func queryUsers(db *sql.DB) {
+	rows, err := db.Query("SELECT username FROM users")
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var username string
+		err := rows.Scan(&username)
+		if err != nil {
+			log.Fatalln(err.Error())
+		}
+		log.Printf("User: %s", username)
+	}
 }
