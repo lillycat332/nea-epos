@@ -37,9 +37,10 @@ func (user *User) validateUser() bool {
 	return len(user.Errors) == 0
 }
 
+// HTTP handler for /readUsers requests
 func userReader(w http.ResponseWriter, r *http.Request) {
-
 	w.WriteHeader(http.StatusOK)
+	enableCors(&w)
 	w.Header().Set("Content-Type", "text/plain")
 	rdb, _ := sql.Open("sqlite3", db)
 	defer rdb.Close()
@@ -49,6 +50,7 @@ func userReader(w http.ResponseWriter, r *http.Request) {
 
 // HTTP handler for /create form inputs
 func userCreateHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	if err := r.ParseForm(); err != nil {
 		fmt.Fprintf(w, "ParseForm() err: %v", err)
 		return

@@ -30,8 +30,8 @@ func init() {
 }
 
 func main() {
-	fileServer := http.FileServer(http.Dir(fs))
-	http.Handle("/", wrapHandler(fileServer))
+	/* fileServer := http.FileServer(http.Dir(fs)) */
+	/* http.Handle("/", wrapHandler(fileServer)) */
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/create", userCreateHandler)
 	http.HandleFunc("/readUsers", userReader)

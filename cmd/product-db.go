@@ -30,8 +30,9 @@ func (p *Product) validateProduct() bool {
 	return len(p.Errors) == 0
 }
 
-// HTTP handler for /create form inputs
+// HTTP handler for /createProduct form inputs
 func productCreateHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	if err := r.ParseForm(); err != nil {
 		fmt.Fprintf(w, "ParseForm() err: %v", err)
 		return

@@ -28,3 +28,8 @@ func wrapHandler(h http.Handler) http.HandlerFunc {
 		}
 	}
 }
+
+// enableCors is used to enable CORS on a http.HandlerFunc.
+func enableCors(w *http.ResponseWriter) {
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+}
