@@ -25,18 +25,22 @@ import AddToCartFAB from './FAB.tsx';
 // @ts-ignore
 import ProductCard from './ProductItem.tsx';
 import Masonry from '@mui/lab/Masonry';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 const drawerWidth = 240;
-const products = [['Banana', 1.0], ['Passionfruit', 2.0], ['Dragonfruit', 3.0], ['Strawbebby', 4.0], ['Starfruit', 5.0]];
-const listItems = products.map((product) =>
-  <ProductCard name={product[0]} price={product[1]} imagePath="logo512.png" />
-);
-
 
 export default function ResponsiveDrawer(props: { window: any; }) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [page, setPage] = React.useState("Home");
+  const [Users, setUsers] = React.useState([]);
+  const [currencyType, setCurrencyType] = React.useState('GBP');
+  const products = [['Banana', 1.0], ['Passionfruit', 2.0], ['Dragonfruit', 3.0], ['Strawbebby', 4.0], ['Starfruit', 5.0]];
+  const [cart, setCart] = React.useState(['Banana']);
+  const listItems = products.map((product) =>
+    <ProductCard name={product[0]} price={product[1]} imagePath="logo512.png" currency={currencyTypeCheck()} />
+  );
+
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
@@ -48,8 +52,71 @@ export default function ResponsiveDrawer(props: { window: any; }) {
     } else if (page === "Users") {
       console.log("Users");
       return <UsersPage />;
+    } else if (page === "Manage") {
+      console.log("Manage");
+      return <ManagePage />;
+    } else if (page === "cart") {
+      return <CartPage />;
     }
     console.log(page);
+  }
+
+  function currencyTypeCheck() {
+    if (currencyType === 'USD') {
+      return '$';
+    } else if (currencyType === 'EUR') {
+      return '€';
+    } else if (currencyType === 'GBP') {
+      return '£';
+    }
+  }
+
+  function HomePage() {
+    return (
+      <Masonry
+        columns={4}
+        spacing={2}
+        defaultHeight={450}
+        defaultColumns={4}
+        defaultSpacing={1}
+      >
+        {listItems}
+      </Masonry>
+    )
+  }
+
+  function CartPage() {
+    const cartItems = cart.map((product) =>
+      {
+        return <ProductCard name={product} price={1} imagePath="logo512.png" currency={currencyTypeCheck()} />;
+      }
+    );
+    return (
+      <ul>{cartItems}</ul>
+    )
+  }
+
+  function ManagePage() {
+    return (
+      <FormControl size='small'>
+        <InputLabel id="currency-select-label">Currency Type</InputLabel>
+        <Select
+          labelId="currency-select-label"
+          id="currency-select"
+          value={currencyType}
+          label="Currency Type"
+          onChange={handleChangeCurrency}
+        >
+          <MenuItem value={"GBP"}>British Pounds</MenuItem>
+          <MenuItem value={"USD"}>US Dollars</MenuItem>
+          <MenuItem value={"EUR"}>Euros</MenuItem>
+        </Select>
+      </FormControl>
+    )
+  }
+
+  function handleChangeCurrency(event: any) {
+    setCurrencyType(event.target.value);
   }
 
   const drawer = (
@@ -144,7 +211,6 @@ export default function ResponsiveDrawer(props: { window: any; }) {
         <Toolbar />
         <div className="bottom-right">
           <AddToCartFAB />
-          <h1>{getUserCallback(getUsers)}</h1>
         </div>
         <HandlePages />
       </Box>
@@ -152,33 +218,39 @@ export default function ResponsiveDrawer(props: { window: any; }) {
   );
 }
 
-function HomePage() {
-  return (
-    <Masonry
-      columns={4}
-      spacing={2}
-      defaultHeight={450}
-      defaultColumns={4}
-      defaultSpacing={1}
-    >
-      {listItems}
-    </Masonry>
-  )
-}
-
 function UsersPage() {
+  const [UserArray, setUserArray] = React.useState([]);
+  setUserArray(getUserCallback(getUsers));
+  React.useEffect(() => {
+    fetch("http://localhost:8080/readUsers", { method: 'post' })
+      .then((response: { text: () => any; }) => response.text())
+      .then((data: any) => {
+        setUserArray(data);
+      })
+      .catch((err: any) => {
+        console.log(err);
+      });
+  }, [UserArray]);
   return (
-    <PersonIcon />
-  )
+    <ul>
+      {UserArray.map((item) => (
+        <li key={item.id}>{item.name}</li>
+      ))}
+    </ul>
+  );
 }
 
-async function getUsers () {
-  const response = await fetch('http://localhost:8080/readUsers');
-  const json = await response.json();
-  return json as string;
+async function getUsers() {
+  const response = await fetch("http://localhost:8080/readUsers", { method: 'post' });
+  const body = await response.text();
+  return body as string;
 }
 
-function getUserCallback(getUsers: Function): string {
-  console.log(getUsers);
-  return getUsers();
+function getUserCallback(getUsers: Function): Array<string> {
+  var result: Array<string>;
+  Promise.resolve(getUsers()).then(function (value) {
+    console.log(value);
+    result = value.split(", ")
+  });
+  return result
 }
