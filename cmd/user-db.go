@@ -40,8 +40,11 @@ func (user *User) validateUser() bool {
 func userReader(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
-	w.Header().Set("Content-Type", "application/octet-stream")
-	io.WriteString(w, "Hello World")
+	w.Header().Set("Content-Type", "text/plain")
+	rdb, _ := sql.Open("sqlite3", db)
+	defer rdb.Close()
+	log.Printf("POST request (Get Users) recieved (%s)", r.RemoteAddr)
+	io.WriteString(w, strings.Join(queryUsers(rdb), ", "))
 }
 
 // HTTP handler for /create form inputs

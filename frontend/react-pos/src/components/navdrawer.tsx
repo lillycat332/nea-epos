@@ -20,7 +20,9 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import LoginIcon from '@mui/icons-material/Login';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
+// @ts-ignore
 import AddToCartFAB from './FAB.tsx';
+// @ts-ignore
 import ProductCard from './ProductItem.tsx';
 import Masonry from '@mui/lab/Masonry';
 
@@ -142,6 +144,7 @@ export default function ResponsiveDrawer(props: { window: any; }) {
         <Toolbar />
         <div className="bottom-right">
           <AddToCartFAB />
+          <h1>{getUserCallback(getUsers)}</h1>
         </div>
         <HandlePages />
       </Box>
@@ -167,4 +170,15 @@ function UsersPage() {
   return (
     <PersonIcon />
   )
+}
+
+async function getUsers () {
+  const response = await fetch('http://localhost:8080/readUsers');
+  const json = await response.json();
+  return json as string;
+}
+
+function getUserCallback(getUsers: Function): string {
+  console.log(getUsers);
+  return getUsers();
 }
