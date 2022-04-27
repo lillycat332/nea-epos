@@ -92,10 +92,12 @@ func createUser(db *sql.DB, username string, password string, privilege string) 
 		log.Fatalln(err.Error())
 	}
 	log.Printf("User %s created successfully", username)
-	queryUsers(db)
+	arr := queryUsers(db)
+	log.Printf("INFO: Users in DB are: %s", arr)
 }
 
-func queryUsers(db *sql.DB) {
+func queryUsers(db *sql.DB) []string {
+	var users []string
 	rows, err := db.Query("SELECT username FROM users")
 	if err != nil {
 		log.Fatalln(err.Error())
@@ -108,6 +110,7 @@ func queryUsers(db *sql.DB) {
 		if err != nil {
 			log.Fatalln(err.Error())
 		}
-		log.Printf("User: %s", username)
+		users = append(users, username)
 	}
+	return users
 }
