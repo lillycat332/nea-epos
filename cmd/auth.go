@@ -18,7 +18,10 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Printf("Login request recieved from %s", r.RemoteAddr)
 	userName := r.FormValue("username")
-	unhashedPassword := r.FormValue("password")
+	unhashedPassword, err := hashPassword(r.FormValue("password"))
+	if err != nil {
+		log.Println(err.Error())
+	}
 	if testPass(userName, unhashedPassword) {
 		w.WriteHeader(http.StatusOK)
 		enableCors(&w)
@@ -32,34 +35,34 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// TestPass tests the password against the database and returns true if the password is correct
+// TestPass tests the password against the database and returns true if the password matches
 func testPass(userName string, unhashedPassword string) bool {
 	rdb, _ := sql.Open("sqlite3", db)
 	defer rdb.Close()
 	u := authQueryUser(rdb, userName)
 	passIsValid := false
-	if checkPasswordMatch(u[1], unhashedPassword) {
+	if checkPasswordMatch(u, unhashedPassword) {
 		passIsValid = true
 	}
 	return passIsValid
 }
 
-// authQueryUser performs an SQL query to get the user's hashed password
-func authQueryUser(db *sql.DB, userName string) []string {
-	var users []string
-	rows, err := db.Query("SELECT username, password FROM users WHERE username = ?", userName)
+// authQueryUser performs an SQL query to get the user's hashed password from the database, returning it if successful
+func authQueryUser(db *sql.DB, userName string) string {
+	var p string
+	rows, err := db.Query("SELECT password FROM users WHERE username = ?", userName)
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		var username string
-		err := rows.Scan(&username)
+		var password string
+		err := rows.Scan(&password)
 		if err != nil {
 			log.Fatalln(err.Error())
 		}
-		users = append(users, username)
+		p = password
 	}
-	return users
+	return p
 }
