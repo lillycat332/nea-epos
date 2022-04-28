@@ -2,13 +2,12 @@ import * as React from "react";
 import * as ReactDOMClient from "react-dom/client";
 import './index.css';
 // @ts-ignore
-import ResponsiveDrawer from "./components/navdrawer.tsx";
+import MainView from "./components/MainView.tsx";
 import 'whatwg-fetch';
-import { useState } from "react";
 
 export default function App() {
   return (
-    <ResponsiveDrawer />
+    <MainView />
   );
 }
 

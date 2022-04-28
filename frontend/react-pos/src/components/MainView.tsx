@@ -29,14 +29,14 @@ import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 const drawerWidth = 240;
 
-export default function ResponsiveDrawer(props: { window: any; }) {
+export default function MainView(props: { window: any; }) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [page, setPage] = React.useState("Home");
   const [Users, setUsers] = React.useState([]);
   const [currencyType, setCurrencyType] = React.useState('GBP');
   const products = [['Banana', 1.0], ['Passionfruit', 2.0], ['Dragonfruit', 3.0], ['Strawberry', 4.0], ['Starfruit', 5.0]];
-  const [cart, setCart] = React.useState(['Banana']);
+  const [cart, setCart] = React.useState([]);
   const listItems = products.map((product) =>
     <ProductCard name={product[0]} price={product[1]} imagePath="logo512.png" currency={currencyTypeCheck()} />
   );
