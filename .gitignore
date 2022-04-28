@@ -4,7 +4,7 @@
 *.dll
 *.so
 *.dylib
-bin/*
+/bin
 
 # Test binary, built with `go test -c`
 *.test
@@ -20,14 +20,15 @@ acme.*
 
 # dependencies
 /node_modules
+*/node_modules
 /.pnp
 .pnp.js
 
 # testing
-/coverage
+coverage/
 
 # production
-/build
+build/
 
 # misc
 .DS_Store
