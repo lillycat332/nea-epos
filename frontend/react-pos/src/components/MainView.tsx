@@ -32,190 +32,205 @@ const drawerWidth = 240;
 export default function MainView(props: { window: any; }) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  const [page, setPage] = React.useState("Home");
+  const [Page, setPage] = React.useState("Home");
   const [Users, setUsers] = React.useState([]);
   const [currencyType, setCurrencyType] = React.useState('GBP');
-  const products = [['Banana', 1.0], ['Passionfruit', 2.0], ['Dragonfruit', 3.0], ['Strawberry', 4.0], ['Starfruit', 5.0]];
-  const [cart, setCart] = React.useState([]);
-  const listItems = products.map((product) =>
-    <ProductCard name={product[0]} price={product[1]} imagePath="logo512.png" currency={currencyTypeCheck()} />
+  //const [Products, setProducts] = React.useState([]);
+  const Products = [['Banana', 1.0], ['Passionfruit', 2.0], ['Dragonfruit', 3.0], ['Strawberry', 4.0], ['Starfruit', 5.0], ['Mango', 6.0]];
+  const [Cart, setCart] = React.useState([]);
+  const listItems = Products.map((Product) =>
+    <ProductCard name={Product[0]} price={Product[1]} imagePath="logo512.png" currency={currencyTypeCheck()} />
   );
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  function HandlePages() {
-    if (page === "Home") {
-      console.log("Home");
-      return <HomePage />;
-    } else if (page === "Users") {
-      console.log("Users");
-      return <UsersPage />;
-    } else if (page === "Manage") {
-      console.log("Manage");
-      return <ManagePage />;
-    } else if (page === "cart") {
-      return <CartPage />;
-    }
-    console.log(page);
+  React.useEffect(() => {
+    fetch("http://localhost:8080/readProducts")
+      .then(res => res.json())
+      .then(
+        (result) => {
+          console.log(result);
+          var tmp = []
+          for (var i in result)
+            tmp.push([i, result[i]]);
+          var r = Object.entries(tmp);
+          console.log(r);
+          setUsers(r);
+        });
+      }, [])
+
+function HandlePages() {
+  if (Page === "Home") {
+    console.log("Home");
+    return <HomePage />;
+  } else if (Page === "Users") {
+    console.log("Users");
+    return <UsersPage />;
+  } else if (Page === "Manage") {
+    console.log("Manage");
+    return <ManagePage />;
+  } else if (Page === "Cart") {
+    return <CartPage />;
   }
+  console.log(Page);
+}
 
-  function currencyTypeCheck() {
-    if (currencyType === 'USD') {
-      return '$';
-    } else if (currencyType === 'EUR') {
-      return '€';
-    } else if (currencyType === 'GBP') {
-      return '£';
-    }
+function currencyTypeCheck() {
+  if (currencyType === 'USD') {
+    return '$';
+  } else if (currencyType === 'EUR') {
+    return '€';
+  } else if (currencyType === 'GBP') {
+    return '£';
   }
+}
 
-  function HomePage() {
-    return (
-      <Masonry
-        columns={4}
-        spacing={2}
-        defaultHeight={450}
-        defaultColumns={4}
-        defaultSpacing={1}
-      >
-        {listItems}
-      </Masonry>
-    )
-  }
-
-  function CartPage() {
-    const cartItems = cart.map((product) =>
-      {
-        return <ProductCard name={product} price={1} imagePath="logo512.png" currency={currencyTypeCheck()} />;
-      }
-    );
-    return (
-      <ul>{cartItems}</ul>
-    )
-  }
-
-  function ManagePage() {
-    return (
-      <FormControl size='small'>
-        <InputLabel id="currency-select-label">Currency Type</InputLabel>
-        <Select
-          labelId="currency-select-label"
-          id="currency-select"
-          value={currencyType}
-          label="Currency Type"
-          onChange={handleChangeCurrency}
-        >
-          <MenuItem value={"GBP"}>British Pounds</MenuItem>
-          <MenuItem value={"USD"}>US Dollars</MenuItem>
-          <MenuItem value={"EUR"}>Euros</MenuItem>
-        </Select>
-      </FormControl>
-    )
-  }
-
-  function handleChangeCurrency(event: any) {
-    setCurrencyType(event.target.value);
-  }
-
-  const drawer = (
-    <div>
-      <Toolbar />
-      <Divider />
-      <List>
-        {['Home', 'Cart', 'Sales'].map((text, index) => (
-          <ListItem button key={text} onClick={() => setPage(text)}>
-            <ListItemIcon>
-              {index === 0 && <HomeIcon />}
-              {index === 1 && <ShoppingCartIcon />}
-              {index === 2 && <AttachMoneyIcon />}
-            </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {['Users', 'Products', 'Manage', 'Login', 'Logout'].map((text: string, index) => (
-          <ListItem button key={text} onClick={() => setPage(text)}>
-            <ListItemIcon>
-              {index === 0 && <PersonIcon />}
-              {index === 1 && <Inventory2Icon />}
-              {index === 2 && <SettingsIcon />}
-              {index === 3 && <LoginIcon />}
-              {index === 4 && <ExitToAppIcon />}
-            </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
-    </div>
-  );
-
-  const container = window !== undefined ? () => window().document.body : undefined;
-
+function HomePage() {
   return (
-    <Box sx={{ display: 'flex' }}>
-      <CssBaseline />
-      <AppBar
-        position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            Triangle
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Box component="nav" sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }} aria-label="mailbox folders">
-        { }
-        <Drawer
-          container={container}
-          variant="permanent"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true,
-          }}
-          sx={{
-            display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-          }}
-        >
-          {drawer}
-        </Drawer>
-        <Drawer
-          variant="permanent"
-          sx={{
-            display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-          }}
-          open
-        >
-          {drawer}
-        </Drawer>
-      </Box>
-      <Box
-        component="main"
-        sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
-      >
-        <Toolbar />
-        <div className="bottom-right">
-          <AddToCartFAB />
-        </div>
-        <HandlePages />
-      </Box>
-    </Box>
+    <Masonry
+      columns={4}
+      spacing={2}
+      defaultHeight={450}
+      defaultColumns={4}
+      defaultSpacing={1}
+    >
+      {listItems}
+    </Masonry>
+  )
+}
+
+function CartPage() {
+  const cartItems = Cart.map((product) => {
+    return <ProductCard name={product} price={1} imagePath="logo512.png" currency={currencyTypeCheck()} />;
+  }
   );
+  return (
+    <ul>{cartItems}</ul>
+  )
+}
+
+function ManagePage() {
+  return (
+    <FormControl size='small'>
+      <InputLabel id="currency-select-label">Currency Type</InputLabel>
+      <Select
+        labelId="currency-select-label"
+        id="currency-select"
+        value={currencyType}
+        label="Currency Type"
+        onChange={handleChangeCurrency}
+      >
+        <MenuItem value={"GBP"}>British Pounds</MenuItem>
+        <MenuItem value={"USD"}>US Dollars</MenuItem>
+        <MenuItem value={"EUR"}>Euros</MenuItem>
+      </Select>
+    </FormControl>
+  )
+}
+
+function handleChangeCurrency(event: any) {
+  setCurrencyType(event.target.value);
+}
+
+const drawer = (
+  <div>
+    <Toolbar />
+    <Divider />
+    <List>
+      {['Home', 'Cart', 'Sales'].map((text, index) => (
+        <ListItem button key={text} onClick={() => setPage(text)}>
+          <ListItemIcon>
+            {index === 0 && <HomeIcon />}
+            {index === 1 && <ShoppingCartIcon />}
+            {index === 2 && <AttachMoneyIcon />}
+          </ListItemIcon>
+          <ListItemText primary={text} />
+        </ListItem>
+      ))}
+    </List>
+    <Divider />
+    <List>
+      {['Users', 'Products', 'Manage', 'Login', 'Logout'].map((text: string, index) => (
+        <ListItem button key={text} onClick={() => setPage(text)}>
+          <ListItemIcon>
+            {index === 0 && <PersonIcon />}
+            {index === 1 && <Inventory2Icon />}
+            {index === 2 && <SettingsIcon />}
+            {index === 3 && <LoginIcon />}
+            {index === 4 && <ExitToAppIcon />}
+          </ListItemIcon>
+          <ListItemText primary={text} />
+        </ListItem>
+      ))}
+    </List>
+  </div>
+);
+
+const container = window !== undefined ? () => window().document.body : undefined;
+
+return (
+  <Box sx={{ display: 'flex' }}>
+    <CssBaseline />
+    <AppBar
+      position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+    >
+      <Toolbar>
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          edge="start"
+          onClick={handleDrawerToggle}
+          sx={{ mr: 2, display: { sm: 'none' } }}
+        >
+          <MenuIcon />
+        </IconButton>
+        <Typography variant="h6" noWrap component="div">
+          Triangle
+        </Typography>
+      </Toolbar>
+    </AppBar>
+    <Box component="nav" sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }} aria-label="mailbox folders">
+      { }
+      <Drawer
+        container={container}
+        variant="permanent"
+        open={mobileOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{
+          keepMounted: true,
+        }}
+        sx={{
+          display: { xs: 'block', sm: 'none' },
+          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+        }}
+      >
+        {drawer}
+      </Drawer>
+      <Drawer
+        variant="permanent"
+        sx={{
+          display: { xs: 'none', sm: 'block' },
+          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+        }}
+        open
+      >
+        {drawer}
+      </Drawer>
+    </Box>
+    <Box
+      component="main"
+      sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+    >
+      <Toolbar />
+      <div className="bottom-right">
+        <AddToCartFAB />
+      </div>
+      <HandlePages />
+    </Box>
+  </Box>
+);
 }
 
 function UsersPage() {
