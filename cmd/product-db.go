@@ -2,9 +2,11 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -16,6 +18,16 @@ type Product struct {
 	Errors map[string]string
 }
 
+func productReader(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	enableCors(&w)
+	w.Header().Set("Content-Type", "application/json")
+	rdb, _ := sql.Open("sqlite3", db)
+	defer rdb.Close()
+	log.Printf("POST request (Get Products) recieved (%s)", r.RemoteAddr)
+	json.NewEncoder(w).Encode(queryProducts(rdb))
+}
+
 // Validate form input
 func (p *Product) validateProduct() bool {
 	p.Errors = make(map[string]string)
@@ -24,7 +36,7 @@ func (p *Product) validateProduct() bool {
 	}
 
 	if strings.TrimSpace(p.Price) == "" {
-		p.Errors["price"] = "No Price\n"
+		p.Errors["price"] = "Please Enter a price.\n"
 	}
 
 	return len(p.Errors) == 0
@@ -69,4 +81,29 @@ func createProduct(db *sql.DB, name string, price string) {
 		log.Fatalln(err.Error())
 	}
 	log.Printf("Product %s created successfully", name)
+}
+
+func queryProducts(db *sql.DB) []Product {
+	var products []Product
+	rows, err := db.Query("SELECT productName, price FROM products")
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var productName string
+		var price int
+		err := rows.Scan(&productName, &price)
+		if err != nil {
+			log.Fatalln(err.Error())
+		}
+		pr := strconv.Itoa(price)
+		p := Product{
+			Name:  productName,
+			Price: pr,
+		}
+		products = append(products, p)
+	}
+	return products
 }
