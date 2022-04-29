@@ -11,6 +11,7 @@ interface ProductProps {
   imagePath: string;
   price: number;
   currency: string;
+  addToCart: Function;
 }
 
 export default function ProductCard(props: ProductProps) {
@@ -30,7 +31,7 @@ export default function ProductCard(props: ProductProps) {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small">Add to Cart</Button>
+        <Button size="small" onClick={() => this.addToCart}>Add to Cart</Button>
       </CardActions>
     </Card>
   );

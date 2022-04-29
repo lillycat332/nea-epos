@@ -40,7 +40,7 @@ export default function MainView(props: { window: any; }) {
   const [Cart, setCart] = React.useState([]);
   
   const listItems = Products.map((Product) =>
-    <ProductCard name={Product[0]} price={Product[1]} imagePath="logo512.png" currency={currencyTypeCheck()} />
+    <ProductCard name={Product[0]} price={Product[1]} imagePath="logo512.png" currency={currencyTypeCheck()} addToCart={() => console.log("helloworld")} />
   );
 
   const handleDrawerToggle = () => {
