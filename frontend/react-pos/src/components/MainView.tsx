@@ -38,6 +38,7 @@ export default function MainView(props: { window: any; }) {
   //const [Products, setProducts] = React.useState([]);
   const Products = [['Banana', 1.0], ['Passionfruit', 2.0], ['Dragonfruit', 3.0], ['Strawberry', 4.0], ['Starfruit', 5.0], ['Mango', 6.0]];
   const [Cart, setCart] = React.useState([]);
+  
   const listItems = Products.map((Product) =>
     <ProductCard name={Product[0]} price={Product[1]} imagePath="logo512.png" currency={currencyTypeCheck()} />
   );
@@ -62,19 +63,18 @@ export default function MainView(props: { window: any; }) {
       }, [])
 
 function HandlePages() {
-  if (Page === "Home") {
-    console.log("Home");
-    return <HomePage />;
-  } else if (Page === "Users") {
-    console.log("Users");
-    return <UsersPage />;
-  } else if (Page === "Manage") {
-    console.log("Manage");
-    return <ManagePage />;
-  } else if (Page === "Cart") {
-    return <CartPage />;
+  switch (Page) {
+    case "Home":
+      return <HomePage />;
+    case "Users":
+      return <UsersPage />;
+    case "Manage":
+      return <ManagePage />;
+    case "Cart":
+      return <CartPage />;
+    default:
+      return null;
   }
-  console.log(Page);
 }
 
 function currencyTypeCheck() {
