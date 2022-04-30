@@ -55,6 +55,7 @@ func userCreateHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "ParseForm() err: %v", err)
 		return
 	}
+	log.Printf("POST request (Create User) recieved (%s)", r.RemoteAddr)
 
 	if len(r.FormValue("password")) <= 0 {
 		fmt.Fprintf(w, "Failed to create user - a password is required!")
@@ -78,7 +79,6 @@ func userCreateHandler(w http.ResponseWriter, r *http.Request) {
 		} else {
 			rdb, _ := sql.Open("sqlite3", db)
 			defer rdb.Close()
-			log.Printf("POST request (Create User) recieved (%s)", r.RemoteAddr)
 			createUser(rdb, u.Username, u.HashedPassword, u.Privilege)
 		}
 	}
