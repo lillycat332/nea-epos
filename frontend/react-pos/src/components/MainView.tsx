@@ -43,9 +43,7 @@ export default function MainView(props: { window: any; }) {
     <ProductCard name={Product[0]} price={Product[1]} imagePath="logo512.png" currency={currencyTypeCheck()} addToCart={() => console.log("helloworld")} />
   );
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
+  const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
 
   React.useEffect(() => {
     fetch("http://localhost:8080/readProducts")
@@ -62,7 +60,7 @@ export default function MainView(props: { window: any; }) {
         });
       }, [])
 
-function HandlePages() {
+  function HandlePages() {
   switch (Page) {
     case "Home":
       return <HomePage />;
