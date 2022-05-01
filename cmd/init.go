@@ -31,7 +31,7 @@ func init() {
 
 func main() {
 	fileServer := http.FileServer(http.Dir(fs))
-	http.Handle("/", wrapHandler(fileServer))
+	http.Handle("/", WrapHandler(fileServer))
 	http.HandleFunc("/login", loginHandler)
 	http.HandleFunc("/readProducts", productReader)
 	http.HandleFunc("/create", userCreateHandler)
