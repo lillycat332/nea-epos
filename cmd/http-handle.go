@@ -5,18 +5,20 @@ import (
 	"net/http"
 )
 
+// StatusRespWr holds a http status code (int) and a ResponseWriter
 type StatusRespWr struct {
 	http.ResponseWriter
 	status int
 }
 
+// WriteHeader adds a HTTP header (int) to a http.ResponseWriter
 func (w *StatusRespWr) WriteHeader(status int) {
 	w.status = status
 	w.ResponseWriter.WriteHeader(status)
 }
 
-// wrapHandler wraps a http.HandlerFunc up so it logs any errors, such as 404.
-func wrapHandler(h http.Handler) http.HandlerFunc {
+// WrapHandler wraps a http.HandlerFunc up so it logs any errors, such as 404.
+func WrapHandler(h http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		srw := &StatusRespWr{ResponseWriter: w}
 		log.Printf("Serving %s", r.RequestURI)
@@ -29,7 +31,7 @@ func wrapHandler(h http.Handler) http.HandlerFunc {
 	}
 }
 
-// enableCors is used to enable CORS on a http.HandlerFunc.
-func enableCors(w *http.ResponseWriter) {
+// EnableCors is used to enable CORS on a http.HandlerFunc.
+func EnableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 }
