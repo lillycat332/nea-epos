@@ -18,24 +18,24 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Printf("Login request recieved from %s", r.RemoteAddr)
 	userName := r.FormValue("username")
-	unhashedPassword, err := hashPassword(r.FormValue("password"))
+	unhashedPassword, err := HashPassword(r.FormValue("password"))
 	if err != nil {
 		log.Println(err.Error())
 	}
 	if testPass(userName, unhashedPassword) {
 		w.WriteHeader(http.StatusOK)
-		enableCors(&w)
+		EnableCors(&w)
 		w.Header().Set("Content-Type", "text/plain")
 		io.WriteString(w, "Login Successful")
 	} else {
 		w.WriteHeader(http.StatusUnauthorized)
-		enableCors(&w)
+		EnableCors(&w)
 		w.Header().Set("Content-Type", "text/plain")
 		io.WriteString(w, "Login Failed")
 	}
 }
 
-// TestPass tests the password against the database and returns true if the password matches
+// testPass tests the password against the database and returns true if the password matches
 func testPass(userName string, unhashedPassword string) bool {
 	rdb, _ := sql.Open("sqlite3", db)
 	defer rdb.Close()
