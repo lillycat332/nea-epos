@@ -12,15 +12,22 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+// Product is a struct containing the Name (string)
+// Price (string), and any errors (map[string]string)
+// of a given product. These are used to represent
+// products before being entered into the database and
+// to communicate with the REST API.
 type Product struct {
 	Name   string
 	Price  string
 	Errors map[string]string
 }
 
+// productReader responds to HTTP GET requests for readproducts.
+// It returns a JSON formatted form of the products matching a query.
 func productReader(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
-	enableCors(&w)
+	EnableCors(&w)
 	w.Header().Set("Content-Type", "application/json")
 	rdb, _ := sql.Open("sqlite3", db)
 	defer rdb.Close()
