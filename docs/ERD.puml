@@ -1,0 +1,51 @@
+@startuml ERD
+!theme aws-orange
+title Entity Relationship Diagram
+skinparam Linetype ortho
+
+entity User {
+	* UserID : int, not null, auto increment
+	Primary Key
+	--
+	* UserName : string, not null, unique
+	* HashedPassword : string, not null
+	* Privilege : integer, not null
+}
+
+entity Product {
+	* ProductID : int, not null, auto increment
+	Primary Key
+	--
+	* ProductName : string, not null, unique
+	* Price : int
+}
+
+entity SalesData {
+	* SalesDataID : int, not null, auto increment
+	Primary Key
+	--
+	* ProductID : int, not null
+	Foreign Key
+	--
+	* SoldThisMonth: int
+	* SoldLastMonth: int
+	* SoldThisYear: int
+}
+
+entity StockData {
+	* StockDataID : int, not null, auto increment
+	--
+	* ProductID : int, not null
+	Foreign Key
+	--
+	* InStock : int
+	* Cost : int
+	* Price : int
+	Foreign Key
+	* Profit : int
+}
+
+SalesData ||--|| Product
+SalesData ||--|| StockData
+Product ||-right-|| StockData
+@enduml
