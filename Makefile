@@ -14,6 +14,17 @@ frontend:
 	@echo "Bundling the frontend..."
 	@cd frontend/react-pos && yarn install && yarn build && cd ../..
 
+clean: clean-products clean-modules
+
+clean-products:
+	@echo "Cleaning up build products..."
+	rm -rf bin
+	rm -rf frontend/react-pos/dist
+
+clean-modules:
+	@echo "Cleaning up node modules..."
+	rm -rf frontend/react-pos/node_modules
+
 $(BUILD_DIR):
 	@echo "Folder $(BUILD_DIR) does not exist, creating it..."
 	mkdir -p $@
