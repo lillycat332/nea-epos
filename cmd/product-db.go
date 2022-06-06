@@ -32,7 +32,7 @@ func productReader(w http.ResponseWriter, r *http.Request) {
 	rdb, _ := sql.Open("sqlite3", db)
 	defer rdb.Close()
 	log.Printf("POST request (Get Products) recieved (%s)", r.RemoteAddr)
-	json.NewEncoder(w).Encode(queryProducts(rdb))
+	json.NewEncoder(w).Encode(queryProducts(rdb, []string{"name", "price"}))
 }
 
 // Validate form input
@@ -49,7 +49,8 @@ func (p *Product) validateProduct() bool {
 	return len(p.Errors) == 0
 }
 
-// HTTP handler for /createProduct form inputs
+// productCreateHandler handles requests for creating products
+// by validating, then inserting them into the database.
 func productCreateHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	if err := r.ParseForm(); err != nil {
@@ -75,7 +76,7 @@ func productCreateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Inserts a new Product (name, price) into the database
+// createaProduct inserts a new Product (name, price) into the database
 func createProduct(db *sql.DB, name string, price string) {
 	log.Println("Attempting creation of new product record.")
 	insertProductStatement := `INSERT INTO products(name, price) VALUES (?,?)`
@@ -90,9 +91,11 @@ func createProduct(db *sql.DB, name string, price string) {
 	log.Printf("Product %s created successfully", name)
 }
 
-func queryProducts(db *sql.DB) []Product {
+// queryProducts returns a slice of Product structs based on an SQL query
+func queryProducts(db *sql.DB, fields []string) []Product {
 	var products []Product
-	rows, err := db.Query("SELECT productName, price FROM products")
+	// Construct the SQL query
+	rows, err := db.Query("SELECT ? FROM products", fields)
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
@@ -101,10 +104,14 @@ func queryProducts(db *sql.DB) []Product {
 	for rows.Next() {
 		var productName string
 		var price int
+
 		err := rows.Scan(&productName, &price)
+
 		if err != nil {
 			log.Fatalln(err.Error())
 		}
+
+		// Ensure the price is a string and not an integer
 		pr := strconv.Itoa(price)
 		p := Product{
 			Name:  productName,
